@@ -2,6 +2,8 @@ package ru.billing.client;
 
 import java.util.Date;
 
+import ru.billing.exceptions.CatalogLoadException;
+import ru.billing.exceptions.ItemAlreadyExistsException;
 import ru.billing.stocklist.FoodItem;
 import ru.billing.stocklist.GenericItem;
 import ru.billing.stocklist.ItemCatalog;
@@ -27,12 +29,12 @@ public class Main {
 
     /* Связь с аналогичными товарами */
 
-    pizza.setSimilar(sandwich); 
+    pizza.setSimilar(sandwich);
     sandwich.setSimilar(pizza);
-    aqua.setSimilar(water); 
-    water.setSimilar(aqua); 
-    juice.setSimilar(fruit_water); 
-    fruit_water.setSimilar(juice); 
+    aqua.setSimilar(water);
+    water.setSimilar(aqua);
+    juice.setSimilar(fruit_water);
+    fruit_water.setSimilar(juice);
 
     /* Выводим категории */
     /*
@@ -49,7 +51,7 @@ public class Main {
     // Part 2
 
     GenericItem foodItem = new FoodItem("Fruit Nectar", 7, 12.2f, "2020-01-05", (short) 12);
-    foodItem.setSimilar(juice); 
+    foodItem.setSimilar(juice);
     // foodItem.printAll();
 
     GenericItem techItem = new TechnicalItem("Phone", 8, 1220.5f, (short) 2); //
@@ -91,15 +93,22 @@ public class Main {
 
     ItemCatalog catalog = new ItemCatalog();
 
-    catalog.addItem(pizza);
-    catalog.addItem(sandwich);
-    catalog.addItem(aqua);
-    catalog.addItem(water);
-    catalog.addItem(juice);
-    catalog.addItem(fruit_water);
-    catalog.addItem(apple);
-    catalog.addItem(pie);
-    catalog.addItem(candy);
+     //added trycatch lab5
+    try {
+      catalog.addItem(pizza);
+      catalog.addItem(sandwich);
+      catalog.addItem(aqua);
+      catalog.addItem(water);
+      catalog.addItem(juice);
+      catalog.addItem(fruit_water);
+      catalog.addItem(apple);
+      catalog.addItem(pie);
+      catalog.addItem(candy);
+    } catch (ItemAlreadyExistsException e1) {
+      e1.printStackTrace();
+    }
+
+    ;
 
     long begin = new Date().getTime();
 
@@ -115,8 +124,30 @@ public class Main {
     System.out.println("In ArrayList:  " + (end - begin));
 
     CatalogLoader loader = new CatalogStubLoader();
-    loader.load(catalog);
 
-    catalog.printItems();
+    //added trycatch lab5
+    try {
+      loader.load(catalog);
+    } catch (CatalogLoadException e) {
+      e.printStackTrace();
+    }
+
+    //catalog.printItems();
+
+
+  //Lab 5
+
+  CatalogFileLoader catf = new CatalogFileLoader("item.lst");
+
+  try {
+    catf.load(catalog);
+  } catch (CatalogLoadException e) {
+    e.printStackTrace();
+  }
+
+  catalog.printItems();
+  
+
+
   }
 }
